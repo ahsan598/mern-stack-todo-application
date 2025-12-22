@@ -17,7 +17,7 @@ COPY . .
 USER node
 
 # Expose Port to the container
-EXPOSE 8080
+EXPOSE 3000
 
 # Specify the command to run when the container starts
 CMD [ "node", "index.js" ]
