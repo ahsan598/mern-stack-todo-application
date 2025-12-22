@@ -1,22 +1,18 @@
 import axios from "axios";
-
-// Use relative path – handled by Nginx proxy
-const api = axios.create({
-  baseURL: "/api/tasks",
-});
-
+const apiUrl = process.env.REACT_APP_BACKEND_URL //"http://localhost:8080/api/tasks";
+console.log(apiUrl)
 export function getTasks() {
-  return api.get("/");
+    return axios.get(apiUrl);
 }
 
 export function addTask(task) {
-  return api.post("/", task);
+    return axios.post(apiUrl, task);
 }
 
 export function updateTask(id, task) {
-  return api.put(`/${id}`, task);
+    return axios.put(apiUrl + "/" + id, task);
 }
 
 export function deleteTask(id) {
-  return api.delete(`/${id}`);
+    return axios.delete(apiUrl + "/" + id);
 }

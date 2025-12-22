@@ -5,7 +5,6 @@ import {
     updateTask,
     deleteTask,
 } from "./services/taskServices";
-import { Paper, Checkbox, Button } from "@mui/material";
 
 class Tasks extends Component {
     state = { tasks: [], currentTask: "" };

@@ -1,14 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import Tasks from "./Tasks";
-import { Paper, TextField, Button } from "@mui/material";
-import "./App.css";
+import { Paper, TextField, Checkbox, Button } from "@mui/material";
+import "./App.css"; // Update your CSS file accordingly
 
-class App extends Component {
-    state = { currentTask: "" };
-
-    handleChange = (e) => {
-        this.setState({ currentTask: e.target.value });
-    };
+class App extends Tasks {
+    state = { tasks: [], currentTask: "" };
 
     render() {
         const { tasks, currentTask } = this.state;
@@ -36,12 +32,11 @@ class App extends Component {
                         <div className="tasks-list">
                             {tasks.map((task) => (
                                 <Paper key={task._id} className="task-item">
-                                    <Checkbox>
+                                    <Checkbox
                                         checked={task.completed}
                                         onClick={() => this.handleUpdate(task._id)}
                                         color="primary"
-                                    </Checkbox>
-                                        
+                                    />
                                     <div className={task.completed ? "task-text completed" : "task-text"}>
                                         {task.task}
                                     </div>
