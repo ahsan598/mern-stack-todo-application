@@ -36,11 +36,12 @@ class App extends Component {
                         <div className="tasks-list">
                             {tasks.map((task) => (
                                 <Paper key={task._id} className="task-item">
-                                    <Checkbox
+                                    <Checkbox>
                                         checked={task.completed}
                                         onClick={() => this.handleUpdate(task._id)}
                                         color="primary"
-                                    />
+                                    </Checkbox>
+                                        
                                     <div className={task.completed ? "task-text completed" : "task-text"}>
                                         {task.task}
                                     </div>
