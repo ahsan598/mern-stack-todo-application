@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { addTask, getTasks, updateTask, deleteTask } from "./taskServices";
+import { addTask, getTasks, updateTask, deleteTask } from "./services/taskServices";
 
 class Tasks extends Component {
   state = { tasks: [], currentTask: "" };
