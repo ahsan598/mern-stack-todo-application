@@ -1,42 +1,32 @@
-# 3-Tier MERN Application — Kubernetes Deployment
+# ☸️ MERN Stack Deployment on Kubernetes
 
 
 ### 🎯 Overview
-This project demonstrates a complete end-to-end deployment of a MERN stack application on Kubernetes, including containerization with Docker and production-grade routing using Ingress.
+This project focuses on containerizing an MERN application and deploying it on Kubernetes with routing using Ingress.
 
 It is designed to simulate real-world cloud deployment practices, covering:
-- Application development
-- Container orchestration
-- Service networking
-- Database persistence
-- Ingress-based traffic management
+- Dockerizing frontend and backend
+- Running MongoDB with persistent storage
+- Deploying the full stack on Kubernetes
+- Using ConfigMaps and Secrets
+- Exposing the app using NGINX Ingress
+- Supporting local clusters (Kind / Minikube / Docker Desktop)
 
 The goal is to provide a hands-on reference implementation for building and deploying modern full-stack applications using Kubernetes.
 
 
-### 🛠️ Prerequisites
+### 🛠️ Tech Stack
+- Docker
+- Kubernetes
+- NGINX Ingress
+- MongoDB
+- Node.js / Express
+- React
 
-1. Required Tools
 
-| Tool           | Installation Link                                                   |
-| -------------- | ------------------------------------------------------------------- |
-| Docker         | Refer the documnet [here](https://docs.docker.com/engine/install/)  |
-| Kubernetes     | Refer the documnet [here](https://kubernetes.io/docs/setup/)        |
-| kubectl        | Refer the documnet [here](https://kubernetes.io/docs/tasks/tools/)  |
-| Git            | Refer the documnet [here](https://git-scm.com/downloads)            |
-
-2. Kubernetes Cluster Options
-**Choose one of the following:**
-- **Minikube:** Local development - Refer the documnet [here](https://minikube.sigs.k8s.io/docs/start/)
-- **Kind:** Kubernetes in Docker -  Refer the documnet [here](https://kind.sigs.k8s.io/)
-- **Docker Desktop:** Built-in K8s (Enable in Settings)
-- **Cloud:** AWS EKS, GCP GKE, Azure AKS
-
-1. System Requirements
-- **CPU:** 4 cores minimum (8 cores recommended)
-- **RAM:** 8GB minimum (16GB recommended)
-- **Disk:** 50GB free space
-- **OS:** Linux, macOS, or Windows with WSL2
+### 🧪 Environments Supported
+- **Local:** Kind, Minikube, Docker Desktop
+- **Cloud:** EKS, GKE, AKS
 
 
 ### Architect Diagram
@@ -45,13 +35,13 @@ The goal is to provide a hands-on reference implementation for building and depl
 
 ### 🧪 Local Testing (Before Kubernetes)
 
-**Step-1:** Clone Repository
+**Step-1: Clone Repository**
 ```sh
-git clone <git-repo-url>
-cd mern-k8s-app
+git clone https://github.com/ahsan598/mern-stack-deployment-on-kubernetes.git
+cd mern-stack-deployment-on-kubernetes
 ```
 
-**Step-2:** Docker Compose Setup
+**Step-2: Docker Compose Setup**
 ```sh
 # Build and start all services
 docker compose up --build -d
@@ -60,24 +50,19 @@ docker compose up --build -d
 docker compose ps
 ```
 
-**Step 3:** Test Application
+**Step 3: Test Application**
 ```sh
 # Frontend (React UI)
 http://localhost:3000
 
 # Backend health check
-curl http://localhost:8080/ok
-
-# Create a task (optional)
-curl -X POST http://localhost:8080/api/tasks \
-  -H "Content-Type: application/json" \
-  -d '{"task":"Deploy to Kubernetes","completed":false}'
+http://localhost:8080/ok
 
 # Get all tasks
-curl http://localhost:8080/api/tasks
+http://localhost:8080/api/tasks
 ```
 
-**Step 4:** Cleanup
+**Step 4: Cleanup**
 ```sh
 # Stop and remove containers + volumes
 docker compose down -v
@@ -85,24 +70,22 @@ docker compose down -v
 
 ### 🚀 Kubernetes Deployment
 
-**Step-1:** Verify Kubernetes Cluster
+**Step-1: Verify Kubernetes Cluster**
 ```sh
 # Check cluster status
 kubectl cluster-info
 kubectl get nodes
-
-# Expected output: Node(s) in Ready state
 ```
 
-**Step-2:** Create Namespace
+**Step-2: Create Namespace**
 ```sh
 kubectl apply -f k8s_manifests/namespace.yaml
 
-# Verify
+# Verify namespace
 kubectl get ns todo-lab
 ```
 
-**Step-3:** Deploy Database Layer (MongoDB)
+**Step-3: Deploy Database Layer (MongoDB)**
 ```sh
 # Apply database manifests
 kubectl apply -f k8s_manifests/database/
@@ -116,43 +99,40 @@ kubectl get pvc -n todo-lab
 
 # Check MongoDB logs
 kubectl logs mongodb-0 -n todo-lab | grep "Waiting for connections"
+
+# Check MongoDb connectivity
+kubectl exec -it mongodb-0 -n dev -- mongosh -u admin -p password123 --authenticationDatabase admin
 ```
-⏳ Wait Time: ~30-60 seconds for MongoDB initialization with authentication.
+**⏳ Wait Time: ~30-60 seconds for MongoDB initialization with authentication.**
 
 
-**Step-4:** Deploy Backend Layer (Node.js/Express)
+**Step-4: Deploy Backend Layer (Node.js/Express)**
 ```sh
 # Apply backend manifests
 kubectl apply -f k8s_manifests/backend/
 
-# Wait for deployment rollout
-kubectl rollout status deployment/backend -n todo-lab
-
 # Verify pods are running
-kubectl get pods -n todo-lab -l app=todo-backend
+kubectl get pods -n todo-lab  -l app=todo-backend
 
 # Check backend logs
 kubectl logs -f deployment/backend -n todo-lab
-# Expected: "Connected to MongoDB successfully!"
-#           "Server listening on port 8080..."
+# Expected: "Connected to database"
+#           "Server running on port 8080..."
 ```
 
 ![database-connection](/assets/images/connection-verify.png)
 
 
-**Step-5:** Deploy Frontend Layer (React/NGINX)
+**Step-5: Deploy Frontend Layer (React/NGINX)**
 ```sh
 # Apply frontend manifests
 kubectl apply -f k8s_manifests/frontend/
 
-# Wait for deployment
-kubectl rollout status deployment/frontend -n todo-lab
-
-# Verify
-kubectl get pods -n todo-lab -l app=frontend
+# Verify pods
+kubectl get pods -n todo-lab -l app=todo-frontend
 ```
 
-**Step-6:** Verify All Resources
+**Step-6: Verify All Resources**
 ```sh
 # Check all resources in namespace
 kubectl get all -n todo-lab
@@ -169,7 +149,6 @@ kubectl get ep -n todo-lab
 
 ### 🌐 Expose Application with Ingress
 
-**Option-A: NGINX Ingress Controller**(Recommended)
 1. Install NGINX Ingress Controller
 ```sh
 # Apply NGINX Ingress Controller
@@ -180,46 +159,20 @@ kubectl get pods -n ingress-nginx
 ```
 
 2. Add Host Entry (Local Machine)
-- Linux/Mac: Edit `/etc/hosts`
+**1. Linux/Mac:**
+  - Edit `/etc/hosts`
 ```sh
 sudo vi /etc/hosts
 
 # Add this line:
 127.0.0.1   todo.local
 ```
-- Windows: Edit `C:\Windows\System32\drivers\etc\hosts` (as Administrator)
+**2. Windows:**
+  - Edit `C:\Windows\System32\drivers\etc\hosts` (as Administrator)
 
-3. Access Application
+**3. Access Application**
 ```sh
-# Open browser
-http://todo.local
-```
-
-**Option-B: NodePort (Quick Testing)**
-```sh
-# Patch frontend service to NodePort
-kubectl patch service frontend-service -n todo-lab -p '{"spec":{"type":"NodePort","ports":[{"port":80,"nodePort":30080}]}}'
-
-# Get node IP
-kubectl get nodes -o wide
-
-# Access application
-http://<NODE-IP>:30080
-
-# OR for local clusters:
-http://localhost:30080
-```
-
-**Option-C: Port Forwarding (Development)**
-```sh
-# Forward frontend service to local port
-kubectl port-forward svc/frontend-service 8080:80 -n todo-lab
-
-# Access application
-http://localhost:8080
-
-# For Ingress
-
+# Forward ingress service to local port (if using Kind)
 kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8085:80
 
 # Access application
@@ -232,16 +185,8 @@ http://localhost:8085
 
 ### ✅ Verification & Testing
 
-1. Health Checks
+1. Testing Database
 ```sh
-# Test frontend
-curl http://todo.local  # or http://localhost:30080
-
-# Test backend health endpoint
-kubectl port-forward svc/backend-svc 8080:8080 -n todo-lab
-curl http://localhost:8080/ok
-# Expected: {"status":"ok","database":"connected"}
-
 # Test MongoDB authentication
 kubectl exec -it mongodb-0 -n todo-lab -- \
   mongosh -u admin -p password123 --authenticationDatabase admin \
@@ -374,28 +319,23 @@ kubectl apply -f k8s_manifests/database/statefulset.yaml
 
 
 ### 📝 Notes
-- Default credentials: admin / password123 (Change in production!)
-- Database persists data in PVC - survives pod restarts
-- Backend uses StatefulSet for stable network identity
-- Frontend uses ConfigMap for NGINX configuration
-- All services use ClusterIP (internal) except Ingress
+- MongoDB uses PVC — data survives pod restarts
+- Backend runs as Deployment
+- Frontend uses NGINX via ConfigMap
+- All services are internal (ClusterIP); access via Ingress
 
 
-### 🧾 Project Summary
-This repository contains a fully working MERN stack application deployed on Kubernetes with:
+### 🧾 Summary
+This repository contains a MERN stack application deployed on Kubernetes with:
 - React frontend
 - Node.js / Express backend
 - MongoDB database with persistent volume
-- NGINX Ingress for traffic routin
+- NGINX Ingress for traffic routing
 - Kubernetes manifests for complete infrastructure setup
-- The solution works both locally (Minikube, Kind, Docker Desktop) and on cloud Kubernetes services.
 
 
 ### 🧱 Conclusion
-This project provides a complete production-style reference for deploying a full-stack application on Kubernetes.
-It demonstrates not only how to run applications in containers, but how to design, connect, secure, and expose them using cloud-native architecture.
-
-The skills and patterns used here are directly applicable to real production systems and cloud deployments.
+This project is a practical reference for learning Docker + Kubernetes by deploying a real multi-tier application stack.
 
 
 ### 📚 References
@@ -403,5 +343,7 @@ The skills and patterns used here are directly applicable to real production sys
 - [Docker Documentation](https://docs.docker.com/)
 - [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/)
 - [MongoDB on Kubernetes](https://www.mongodb.com/kubernetes)
-- [Express.js](https://expressjs.com/)
-- [React](https://react.dev/)
+- [Express.js Documentation](https://expressjs.com/)
+- [React Documentation](https://react.dev/)
+- [KIND Docs](https://kind.sigs.k8s.io/)
+- [Minikube Docs](https://minikube.sigs.k8s.io/docs/start/)
