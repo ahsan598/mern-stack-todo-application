@@ -8,7 +8,7 @@ User → Ingress/NodePort → Frontend Service → Frontend Pods (NGINX)
 ```
 
 
-###
+### To test locally first before k8s deployment
 ```sh
 # To start the containers
 docker compose up --build
@@ -18,13 +18,20 @@ http://localhost:3000
 
 http://localhost:8081/ok
 
+
+# Verify backend
+curl -X POST http://localhost:8081/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"task":"hello world"}'
+
 curl http://localhost:8081/api/tasks
+
 
 # To the containers
 docker compose down -v
 ```
 
-### Complete Deployment Order
+### K8s Deployment Order
 ```sh
 # 1. Namespace (if not exists)
 kubectl apply -f namesapce.yaml
