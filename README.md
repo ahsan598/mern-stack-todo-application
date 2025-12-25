@@ -1,4 +1,4 @@
-# ☸️ MERN Stack Deployment on Kubernetes
+# <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/kubernetes/kubernetes-plain.svg" alt="Kubernetes" width="40"/> MERN Stack Deployment on Kubernetes
 
 
 ### 🎯 Overview
@@ -29,7 +29,7 @@ The goal is to provide a hands-on reference implementation for building and depl
 - **Cloud:** EKS, GKE, AKS
 
 
-### Architect Diagram
+### ⚙️ Architect Diagram
 ![architect](/assets/images/architect-diagram.gif)
 
 
