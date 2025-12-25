@@ -56,11 +56,8 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
-          exec:
-            command:
-            - mongosh
-            - --eval
-            - "db.adminCommand('ping')"
+          tcpSocket:
+            port: 27017
           initialDelaySeconds: 10
           periodSeconds: 5
 
