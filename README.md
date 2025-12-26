@@ -65,6 +65,9 @@ cd mern-stack-deployment-on-kubernetes
 # Build and start all services
 docker compose up --build -d
 
+# # Check logs
+docker compose logs -f
+
 # Verify containers are running
 docker compose ps
 ```
