@@ -22,6 +22,10 @@ spec:
       - name: mongodb
         image: mongo:8.0
         imagePullPolicy: IfNotPresent
+        command:
+          - "mongod"
+          - "--bind_ip"
+          - "auth"
         ports:
         - name: mongodb
           containerPort: 27017

@@ -108,7 +108,7 @@ kubectl get pvc -n todo-lab
 kubectl logs mongodb-0 -n todo-lab | grep "Waiting for connections"
 
 # Check MongoDb connectivity
-kubectl exec -it mongodb-0 -n dev -- mongosh -u admin -p password123 --authenticationDatabase admin
+kubectl exec -it mongodb-0 -n todo-lab -- mongosh -u admin -p password123 --authenticationDatabase admin
 ```
 **⏳ Wait Time: ~30-60 seconds for MongoDB initialization with authentication.**
 
