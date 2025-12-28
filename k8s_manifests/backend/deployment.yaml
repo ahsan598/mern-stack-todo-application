@@ -31,11 +31,25 @@ spec:
           containerPort: 8080         # Port matching index.js
 
         env:
-        - name: MONGO_CONN_STR
+        - name: MONGO_USERNAME_RAW
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_USERNAME
+        - name: MONGO_PASSWORD_RAW
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_PASSWORD
+
+        - name: MONGO_HOST
           valueFrom:
             configMapKeyRef:
               name: backend-config
-              key: MONGO_CONN_STR
+              key: MONGO_HOST
+        - name: MONGO_CONN_STR
+          value: "mongodb://$(MONGO_USERNAME_RAW):$(MONGO_PASSWORD_RAW)@$(MONGO_HOST):27017/todo?authSource=admin"
+
         - name: USE_DB_AUTH
           valueFrom:
             configMapKeyRef:
@@ -47,16 +61,7 @@ spec:
               name: backend-config
               key: PORT
 
-        - name: MONGO_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: MONGO_USERNAME
-        - name: MONGO_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: MONGO_PASSWORD
+
 
         livenessProbe:
           httpGet:
