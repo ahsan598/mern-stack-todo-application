@@ -48,6 +48,21 @@ body {
     gap: 10px; /* Space between input and button */
 }
 
+/* Form Flex Container */
+.task-form {
+    display: flex;
+    align-items: center; /* Vertically align input and button */
+    gap: 15px; /* Space between input and button */
+    margin-bottom: 20px;
+}
+
+/* Ensure Button doesn't shrink or wrap */
+.add-task-btn {
+    height: 40px; /* Match Input Height (MUI small input is approx 40px) */
+    min-width: 120px !important; /* Force width */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
 /* Task Item Styling */
 .task_container {
     padding: 10px;

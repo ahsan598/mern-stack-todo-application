@@ -87,9 +87,9 @@ const App = () => {
                         placeholder="Add New TO-DO"
                     />
                     <Button
-                        style={{ height: "40px" }}
+                        className="add-task-btn"
                         color="primary"
-                        variant="outlined"
+                        variant="contained"
                         type="submit"
                     >
                         Add task
