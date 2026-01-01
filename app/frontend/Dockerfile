@@ -1,8 +1,5 @@
 # ======================================================
 # Stage 1: Build Stage
-# ------------------------------------------------------
-# Uses Node.js to install dependencies and build the
-# React application into static files.
 # ======================================================
 FROM node:24-alpine AS builder
 
@@ -22,20 +19,17 @@ COPY . .
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 
-# Build the React application, the output is generated in the /app/build directory
+# Build the react application
 RUN npm run build
 
 
 # ======================================================
 # Stage 2: Serve Stage (Nginx)
-# ------------------------------------------------------
-# Uses Nginx to serve the built static files efficiently
-# and act as a reverse proxy for backend API requests.
 # ======================================================
 FROM nginx:1.28-alpine
 
-# Copy the build artifacts from the build stage to Nginx's default web directory
-COPY --from=builder /app/build /usr/share/nginx/html
+# Copy build artifacts (Vite uses 'dist' by default), from the build stage to Nginx's default web directory
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy custom Nginx config for React Router support
 COPY nginx.conf /etc/nginx/conf.d/default.conf

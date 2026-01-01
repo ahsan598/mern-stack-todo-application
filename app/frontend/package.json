@@ -6,13 +6,14 @@
   "private": true,
   
   "engines": {
-    "node": ">=18"
+    "node": ">=24.0.0",
+    "npm": ">=10.0.0"
   },
 
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --host"
   },
     
   "keywords": ["react", "vite", "todo", "frontend", "mui"],
